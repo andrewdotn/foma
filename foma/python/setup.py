@@ -30,7 +30,6 @@ def get_version():
             f'^#define {key} (?:([0-9]+)|"([^"]*)")$', header_text, re.MULTILINE
         )
 
-        print(match)
         if not match:
             raise Exception(
                 f"Unable to find or parse ‘#define {key}’ line from {header_file}"
