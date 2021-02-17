@@ -106,8 +106,22 @@ __version__ = foma.fsm_get_library_version_string().decode('UTF-8')
 """Define functions."""
 foma_add_defined = foma.add_defined
 foma_add_defined.restype = c_int
-foma_add_defined_function = foma.add_defined_function
-foma_add_defined_function.restype = c_int
+
+# The foma that homebrew install is the 0.9.18 release from 2015 at
+# https://bitbucket.org/mhulden/foma/downloads/. It does not export
+# `add_defined_function`. So we only expose it to python if it is
+# available.
+#
+# $ curl -L https://bintray.com/homebrew/bottles/download_file?file_path=foma-0.9.18.big_sur.bottle.1.tar.gz \
+#       | tar xf - --to-stdout foma/0.9.18/lib/libfoma.0.9.18.dylib \
+#       | objdump -t /dev/stdin | grep add_defined
+#
+# 00000000000040b2 l     F __TEXT,__text _add_defined_function
+# 0000000000004178 g     F __TEXT,__text _add_defined
+if hasattr(foma, 'add_defined_function'):
+    foma_add_defined_function = foma.add_defined_function
+    foma_add_defined_function.restype = c_int
+
 defined_networks_init = foma.defined_networks_init
 defined_networks_init.restype = c_void_p
 defined_functions_init = foma.defined_functions_init
