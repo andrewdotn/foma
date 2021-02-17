@@ -22,6 +22,39 @@ from ctypes import *
 from ctypes.util import find_library
 
 fomalibpath = find_library('foma')
+
+def find_library_trying_harder(executable_name):
+    """
+    If `foo` comes from homebrew, find_library might not find `libfoo`.
+    But if `foo` is on `$PATH`, look for `libfoo` nearby.
+
+    For example, if `foo` is at `/bar/bin/foo`, check if
+    `/bar/lib/libfoo.dylib` exists.
+    """
+    import distutils.spawn
+    import os.path
+
+    executable = distutils.spawn.find_executable(executable_name)
+    if executable is None:
+        return
+
+    for libdir_name in ['lib', 'lib64']:
+        libdir = os.path.join(
+            os.path.dirname(os.path.realpath(executable)),
+            '..',
+            libdir_name)
+        for prefix in ['', 'lib']:
+            for suffix in ['.so', '.dylib']:
+                filename = prefix + executable_name + suffix
+                path = os.path.join(libdir, filename)
+                if os.path.isfile(path):
+                    return path
+
+if fomalibpath is None:
+    fomalibpath = find_library_trying_harder('foma')
+if fomalibpath is None:
+    raise Exception("libfoma was not found")
+
 foma = cdll.LoadLibrary(fomalibpath)
 
 class FSTstruct(Structure):

@@ -2,6 +2,16 @@ import re
 from pathlib import Path
 from setuptools import setup
 
+__doc__ = """\
+This package contains a modified version of the foma.py Python API file
+from https://github.com/mhulden/foma/tree/master/foma/python, allowing it
+to be installed via pip as
+
+    pip install 'git+https://github.com/andrewdotn/foma/python#egg=foma&subdirectory=python'
+
+This package requires that libfoma be installed; this package does not
+include foma itself.
+"""
 
 def get_version():
     "Parse the current foma version out of fomalib.h"
