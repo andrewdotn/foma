@@ -24,7 +24,6 @@ from ctypes.util import find_library
 fomalibpath = find_library('foma')
 foma = cdll.LoadLibrary(fomalibpath)
 
-
 class FSTstruct(Structure):
     _fields_ = [
         ("name", c_char * 40),
@@ -99,7 +98,10 @@ foma_fsm_flatten.restype = POINTER(FSTstruct)
 foma_apply_set_space_symbol = foma.apply_set_space_symbol
 foma_fsm_read_binary_file = foma.fsm_read_binary_file
 foma_fsm_read_binary_file.restype = POINTER(FSTstruct)
+foma_fsm_get_library_version_string = foma.fsm_get_library_version_string
+foma_fsm_get_library_version_string.restype = c_char_p
 
+__version__ = foma.fsm_get_library_version_string().decode('UTF-8')
 
 """Define functions."""
 foma_add_defined = foma.add_defined
